@@ -1,10 +1,8 @@
 package booknow.service
 
-import booknow.model.Employee
-import booknow.model.Location
-import booknow.model.Venue
-import booknow.model.VenueRegistrationDTO
-import booknow.repository.EmployeeRepository
+import booknow.model.entity.Location
+import booknow.model.entity.Venue
+import booknow.model.dto.VenueRegistrationDTO
 import booknow.repository.LocationRepository
 import booknow.repository.VenueRepository
 import org.springframework.stereotype.Service
@@ -12,9 +10,9 @@ import org.springframework.stereotype.Service
 @Service
 class VenueService(
     private val venueRepository: VenueRepository,
-private val locationRepository: LocationRepository,
-private val employeeRepository: EmployeeRepository
-) {
+    private val locationRepository: LocationRepository,
+
+    ) {
     fun registerVenue(dto: VenueRegistrationDTO): Venue {
         val venue = Venue(
             name = dto.name,
@@ -22,31 +20,21 @@ private val employeeRepository: EmployeeRepository
             contactPhone = dto.contactPhone,
             email = dto.email
         )
-
         val savedVenue = venueRepository.save(venue)
-
         val location = Location(
-            venue = savedVenue,
             countryId = dto.location.countryId,
             postalCode = dto.location.postalCode,
             addressLines = dto.location.addressLines,
-            )
-        savedVenue.location = location
+            venue = savedVenue
+        )
         locationRepository.save(location)
-
-        val employees = dto.employees.map { employeeDto ->
-            Employee(
-                venue = savedVenue,
-                name = employeeDto.name,
-                title = employeeDto.title,
-                providesServices = employeeDto.providesServices,
-                sentiments = employeeDto.sentiments ?: emptyList()
-            )
-        }
-
-        employeeRepository.saveAll(employees)
-        savedVenue.employees.addAll(employees)
 
         return savedVenue
     }
+
+    fun getVenueDetailsById(id: Long) = venueRepository.findVenueById(id)
+
+    fun getLocationById(id: Long) = locationRepository.getLocationWithVenueById(id)
+
+    fun getVenueByLocationId(id: Long) = venueRepository.findVenueByLocationId(id)
 }

@@ -1,13 +1,13 @@
-package booknow.model
+package booknow.model.dto
 
 data class VenueRegistrationDTO(
-    val name : String,
+    val name: String,
     val description: String,
     val contactPhone: String,
     val email: String,
     val location: LocationDTO,
-    val employees: List<EmployeeDTO>,
- //   val openingHours: List<String>
+    val employees: List<EmployeeDTO>? = null,
+    //   val openingHours: List<String>
 )
 
 data class LocationDTO(
@@ -22,5 +22,5 @@ data class EmployeeDTO(
     val name: String,
     val title: String,
     val providesServices: Boolean,
-    val sentiments : List<String>? = null
+    val sentiments: List<String>? = null
 )

@@ -1,9 +1,12 @@
 package booknow.repository
 
-import booknow.model.Location
+import booknow.model.entity.Location
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Repository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 
-@Repository
-interface LocationRepository: JpaRepository<Location, Long> {
+interface LocationRepository : JpaRepository<Location, Long> {
+
+    @Query("SELECT l FROM Location l JOIN FETCH l.venue WHERE l.id = :id")
+    fun getLocationWithVenueById(@Param("id") id: Long): Location?
 }
